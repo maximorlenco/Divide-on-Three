@@ -1,11 +1,7 @@
 package com.project.game.model;
 
-public enum Player {
+public enum Player {COMPUTER("COMPUTER"), PLAYER("PLAYER");
 
-    Player(1, "Player"),
-    Computer(2, "Computer"),
-    PlayerSecond(3, "Player-2");
-
-    Player(Integer id, String name) {
-    }
+ Player(String name){
+ }
 }
