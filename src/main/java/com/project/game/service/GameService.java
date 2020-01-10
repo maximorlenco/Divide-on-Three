@@ -10,7 +10,9 @@ public interface GameService {
 
     Game getGameById(Long id);
 
-    Game play(Long number,Integer startPlayer);
+    String game(Long number, Integer startPlayer);
+
+    String game();
 
     Integer choosePlayerForFirstStep();
 

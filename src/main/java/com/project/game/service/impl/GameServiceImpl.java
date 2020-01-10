@@ -26,8 +26,8 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game create() {
-        Game game =new Game();
-        List<Step> stepList =new LinkedList<>();
+        Game game = new Game();
+        List<Step> stepList = new LinkedList<>();
         game.setSteps(stepList);
         return gameRepository.save(game);
     }
@@ -42,9 +42,17 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game play(Long number, Integer startPlayer) {
-        Game newGame = create();
+    public String game() {
+        if (choosePlayerForFirstStep() == 0) {
+            return game(generateNumberForGame(), 0);
+        }
+        return new String("It is Your Step, send please number");
+    }
 
+
+    @Override
+    public String game(Long number, Integer startPlayer) {
+        Game newGame = create();
         Player firstPlayer;
         Player secondPlayer;
         Player PlayerInThisStep;
@@ -56,31 +64,35 @@ public class GameServiceImpl implements GameService {
             secondPlayer = Player.COMPUTER;
         }
         addStepToGame(newGame.getId(), stepService.create(number, firstPlayer));
-        stepService.create(number, firstPlayer);
 
         Long numberToDivide = number;
-        for (int i = 1; numberToDivide >1; i++) {
+        for (int i = 1; numberToDivide >= 1; i++) {
             if (i % 2 == 0) {
-                PlayerInThisStep = secondPlayer;
-            } else {
                 PlayerInThisStep = firstPlayer;
+            } else {
+                PlayerInThisStep = secondPlayer;
             }
             if (numberToDivide % 3 == 0) {
                 numberToDivide = divideOnThree(numberToDivide);
                 addStepToGame(newGame.getId(), stepService.create(numberToDivide, PlayerInThisStep));
             } else {
-                if (numberToDivide++ % 3 == 0) {
+                if ((numberToDivide + 1) % 3 == 0) {
+                    numberToDivide++;
                     numberToDivide = divideOnThree(numberToDivide);
                     addStepToGame(newGame.getId(), stepService.create(numberToDivide, PlayerInThisStep));
-                } else if (numberToDivide-- % 3 == 0) {
+                } else if ((numberToDivide - 1) % 3 == 0) {
+                    numberToDivide--;
                     numberToDivide = divideOnThree(numberToDivide);
                     addStepToGame(newGame.getId(), stepService.create(numberToDivide, PlayerInThisStep));
                 }
             }
+            if (numberToDivide == 1) {
+                newGame.setWinner(PlayerInThisStep.toString());
+                gameRepository.save(newGame);
+                numberToDivide--;
+            }
         }
-
-
-        return gameRepository.save(newGame);
+        return newGame.getWinner();
     }
 
 
@@ -88,6 +100,11 @@ public class GameServiceImpl implements GameService {
     public Integer choosePlayerForFirstStep() {
         Random gen = new Random();
         return gen.nextInt((1 - 0) + 1) + 0;
+    }
+
+    private Long generateNumberForGame() {
+        Random gen = new Random();
+        return gen.nextLong();
     }
 
     @Override

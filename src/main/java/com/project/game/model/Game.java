@@ -23,4 +23,7 @@ public class Game {
     @JoinTable(name = "GAME_STEPS", joinColumns = {@JoinColumn(name = "GAME_ID")},
             inverseJoinColumns = {@JoinColumn(name = "STEP_ID")})
     private List<Step> steps;
+
+    @Column(name = "WINNER")
+    private String winner;
 }

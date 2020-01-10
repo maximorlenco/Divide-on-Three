@@ -7,6 +7,8 @@ import com.project.game.service.StepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class StepServiceImpl implements StepService {
 
@@ -20,5 +22,10 @@ public class StepServiceImpl implements StepService {
                 .player(player)
                 .build();
         return stepRepository.save(step);
+    }
+
+    @Override
+    public Optional<Step> getStepById(Long id) {
+        return stepRepository.findById(id);
     }
 }
